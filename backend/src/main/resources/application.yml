@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: qingjian
+  profiles:
+    # 默认加载 application-local.yml（本地数据库密码，见 AGENTS.md，不入库）
+    default: local
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=QingJian;encrypt=true;trustServerCertificate=true
+    username: ${DB_USER:qingjian}
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  jackson:
+    time-zone: Asia/Shanghai
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    banner: false
+    db-config:
+      id-type: auto
