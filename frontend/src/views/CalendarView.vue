@@ -42,22 +42,18 @@
             记录 {{ cellOf(group.date).timelineCount }} · 🍅 {{ cellOf(group.date).pomodoroCount }}
           </span>
         </div>
-        <div v-for="note in group.notes" :key="note.id" class="list-note" @click.stop="openNote(note)">
+        <div
+          v-for="note in group.notes"
+          :key="note.id"
+          class="list-note"
+          @click.stop="$emit('open-editor', { date: note.logDate, id: note.id })"
+        >
           <span class="note-cat" :class="note.category === '日记' ? 'diary' : 'misc'">{{ note.category }}</span>
           <span class="list-note-title">{{ note.title }}</span>
         </div>
       </div>
     </div>
 
-    <el-dialog v-model="dialog" :title="activeNote ? activeNote.title : ''" width="640px">
-      <template v-if="activeNote">
-        <div class="note-meta">{{ activeNote.category }} · {{ activeNote.logDate }}</div>
-        <div class="note-content">{{ activeNote.content }}</div>
-      </template>
-      <template #footer>
-        <el-button v-if="activeNote" size="small" @click="$emit('open-day', activeNote.logDate)">去当天编辑</el-button>
-      </template>
-    </el-dialog>
   </section>
 </template>
 
@@ -65,7 +61,7 @@
 import { computed, ref, watch } from 'vue';
 import { api } from '../api';
 
-defineEmits(['open-day']);
+defineEmits(['open-day', 'open-editor']);
 
 const now = new Date();
 const pad = (n) => String(n).padStart(2, '0');
@@ -73,8 +69,6 @@ const month = ref(`${now.getFullYear()}-${pad(now.getMonth() + 1)}`);
 const mode = ref('grid');
 const calendar = ref([]);
 const notes = ref([]);
-const dialog = ref(false);
-const activeNote = ref(null);
 
 const weekdays = ['一', '二', '三', '四', '五', '六', '日'];
 const todayStr = (() => {
@@ -152,11 +146,6 @@ function shiftMonth(delta) {
 async function load() {
   calendar.value = await api.getCalendar(month.value);
   notes.value = await api.listNotes(month.value);
-}
-
-async function openNote(note) {
-  activeNote.value = await api.getNote(note.id);
-  dialog.value = true;
 }
 
 watch(month, load, { immediate: true });

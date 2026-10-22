@@ -36,7 +36,7 @@
       </section>
       <section v-show="merged || activeTab === 'note'">
         <h3 v-if="merged" class="section-head">笔记</h3>
-        <NotePanel :date="date" :day="day" @refresh="load" />
+        <NotePanel :date="date" :day="day" @refresh="load" @open-editor="$emit('open-editor', $event)" />
       </section>
       <section v-show="merged || activeTab === 'pomodoro'">
         <h3 v-if="merged" class="section-head">专注</h3>
@@ -69,13 +69,14 @@
 import { computed, ref, watch } from 'vue';
 import { ElMessage } from 'element-plus';
 import { api } from '../api';
+import { pomoStore } from '../stores/pomodoro';
 import TodoPanel from '../components/TodoPanel.vue';
 import TimelinePanel from '../components/TimelinePanel.vue';
 import NotePanel from '../components/NotePanel.vue';
 import PomodoroPanel from '../components/PomodoroPanel.vue';
 
 const props = defineProps({ date: { type: String, required: true } });
-const emit = defineEmits(['change-date']);
+const emit = defineEmits(['change-date', 'open-editor']);
 
 const day = ref({ todos: [], overdue: [], timeline: [], notes: [], pomodoros: [], summary: null });
 const activeTab = ref('todo');
@@ -139,6 +140,17 @@ watch(
   () => props.date,
   () => {
     load();
+  },
+  { immediate: true }
+);
+
+watch(
+  () => pomoStore.openPomodoro,
+  (flag) => {
+    if (!flag) return;
+    merged.value = false;
+    activeTab.value = 'pomodoro';
+    pomoStore.openPomodoro = false;
   },
   { immediate: true }
 );
