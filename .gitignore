@@ -1,0 +1,5 @@
+node_modules/
+target/
+backend/target/
+frontend/node_modules/
+backend/src/main/resources/application-local.yml
