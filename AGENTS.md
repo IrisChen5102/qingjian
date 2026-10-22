@@ -1,4 +1,4 @@
-# AGENTS.md · 青笺 QingJian
+# AGENTS.md · 今日页（Today's Page）
 
 ## 项目是什么
 
