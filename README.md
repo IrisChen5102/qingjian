@@ -26,3 +26,9 @@ cd frontend && npm install && npm run dev             # 前端 :5173
 ## 版本
 
 v0.1（需求与设计）→ 后续迭代见 CHANGELOG 与 git tag。
+
+## 云端部署（Render）
+
+- 仓库根目录提供多阶段构建的 `Dockerfile`：前端 Vite 构建 → 后端 Maven 打包（前端产物内嵌为静态资源）→ 运行时镜像
+- 云端使用 `cloud` profile：内嵌 H2 演示数据库并自动写入当天演示数据；本地开发仍使用 SQL Server（`local` profile）
+- 在 Render 新建 Web Service，连接本仓库（Runtime 选 Docker、分支 main、免费实例）即可部署

@@ -1,0 +1,7 @@
+backend/target
+frontend/node_modules
+frontend/dist
+.git
+提交材料
+docs
+*.md
